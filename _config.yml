@@ -37,9 +37,9 @@ owner:
   avatar: noobe-logo.png
   job: "Pentester • Bug Hunter • Security Enthusiast"
   bio: "Just another noob post."
-  email:
+  email: root@noobe.io
   disqus-shortname: noobe
-  twitter: #username
+  twitter: noobe_io
   facebook: #username
   google:
     plus: #username
@@ -48,10 +48,10 @@ owner:
     ad-client:
     ad-slot:
   bing-verify:
-  github: #username
+  github: noobeio
   gitlab: #username
   stackoverflow: #123456/username   from a "http://stackoverflow.com/users/123456/username" link
-  linkedin: #username
+  linkedin: tomi-a-3b7a0a11b
   skype: #username
   xing: #username
   instagram: #username
