@@ -1,7 +1,7 @@
 ---
 layout: post
 title: How I accidentally found Bug in Google Search Console
-excerpt: "It started when I wanted to add my website to Google Search Colsole. I found a form to enter a domain name to add to the application."
+excerpt: "In this simple writeup, I would like to tell how I found an Access Control bug in the Google Search Console application, where I can get information related to the domain that I added to the application even though the domain was not successfully verified by me."
 tags: [bug hunting, hacking, google, broken access control]
 categories: [bug hunting]
 comments: true
