@@ -5,9 +5,30 @@
     <description>Just another noob post.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>2020-01-18</pubDate>
-    <lastBuildDate>Sat, 18 Jan 2020 19:05:44 +0700</lastBuildDate>
+    <pubDate>2020-01-25</pubDate>
+    <lastBuildDate>Sat, 25 Jan 2020 01:53:31 +0700</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Account Takeover by Chaining Multiple Vulnerabilities</title>
+        <description>
+</description>
+        <pubDate>2020-01-25</pubDate>
+        <link>http://localhost:4000/articles/2020-01/account-takeover-chaining-vulnerabilities</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2020-01/account-takeover-chaining-vulnerabilities</guid>
+        
+        <category>bug hunting</category>
+        
+        <category>unvalidated redirect</category>
+        
+        <category>csrf</category>
+        
+        <category>parameter pollution</category>
+        
+        
+        <category>bug hunting</category>
+        
+      </item>
     
       <item>
         <title>How I accidentally found Bug in Google Search Console</title>
@@ -41,7 +62,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/assets/40b89ba586da5e300fe220d4af958c52-5.png&quot; alt=&quot;Reward&quot; /&gt;&lt;/p&gt;
 </description>
-        <pubDate>2020-01-18</pubDate>
+        <pubDate>2020-01-25</pubDate>
         <link>http://localhost:4000/articles/2020-01/how-i-found-bug-google-search-console</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2020-01/how-i-found-bug-google-search-console</guid>
         
@@ -251,7 +272,7 @@ X-Content-Type-Options: nosniff
   &lt;li&gt;Look for other endpoints that can be used to obtain a valid CSRF Token.&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>2020-01-18</pubDate>
+        <pubDate>2020-01-25</pubDate>
         <link>http://localhost:4000/articles/2019-10/xss-to-account-takeover</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2019-10/xss-to-account-takeover</guid>
         
@@ -419,7 +440,7 @@ SUCCESS 52673, 98235
   &lt;li&gt;If you find the upload form and you cannot upload the shell. Try to bypass it by trying to upload via Burpsuite Repeater, changing extensions, mime type, etc. After the file has been uploaded successfully, learn the flow how they save the file.&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>2020-01-18</pubDate>
+        <pubDate>2020-01-25</pubDate>
         <link>http://localhost:4000/articles/2019-09/exploiting-cookie-based-xss-by-finding-rce</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2019-09/exploiting-cookie-based-xss-by-finding-rce</guid>
         
@@ -533,7 +554,7 @@ SUCCESS 52673, 98235
   &lt;li&gt;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>2020-01-18</pubDate>
+        <pubDate>2020-01-25</pubDate>
         <link>http://localhost:4000/articles/2019-08/aws-metadata-disclosure-via-hardcoded-host-download</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2019-08/aws-metadata-disclosure-via-hardcoded-host-download</guid>
         
@@ -588,7 +609,7 @@ SUCCESS 52673, 98235
 
 &lt;p&gt;So this article was written, hopefully it will be useful for us all.&lt;/p&gt;
 </description>
-        <pubDate>2020-01-18</pubDate>
+        <pubDate>2020-01-25</pubDate>
         <link>http://localhost:4000/articles/2019-06/reflected-xss-on-error-page</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2019-06/reflected-xss-on-error-page</guid>
         
@@ -699,7 +720,7 @@ file=35C2XxQY_400x400.png
   &lt;li&gt;CWE-284: Improper Access Control&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>2020-01-18</pubDate>
+        <pubDate>2020-01-25</pubDate>
         <link>http://localhost:4000/articles/2019-01/how-i-hack-antihack-me</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2019-01/how-i-hack-antihack-me</guid>
         
