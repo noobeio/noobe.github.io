@@ -1,7 +1,7 @@
 ---
 layout: post
 title: XSS to Account Takeover - Bypassing CSRF Header Protection and HTTPOnly Cookie
-excerpt: "When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometimes the imagination fades when we try to insert document.cookie into the XSS payload and what appears is.."
+excerpt: "When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometimes the imagination fades when we try to insert document.cookie into the XSS payload, and what appears is.."
 tags: [bug hunting, hacking, csrf, xss, account takeover]
 categories: [bug hunting]
 comments: true
@@ -12,13 +12,13 @@ image:
 بسم الله الرحمن الرحيم
 
 
-When doing a Bug Hunting and finding a Stored XSS bug, usually the imagination will get a big enough bounty has been spinning around on the head. But sometimes the imagination fades when we try to insert document.cookie into the XSS payload and what appears is:
+When doing a Bug Hunting and finding a Stored XSS bug, the imagination will usually get a big enough bounty that has been spinning around on the head. But sometimes the imagination fades when we try to insert `document.cookie` into the XSS payload and what appears is:
 
 ![Blank Cookie](/assets/5d02f144bca472117661e342a29bf504-1.png)
 
 Popup alerts are expected to display cookies from the target website but instead display nothing because _the cookies on the website are set HTTPOnly so that they cannot be accessed by javascript_.
 
-When you find something like this, usually the next option is to make a request using **XHR** to ‘force’ users to take sensitive actions without their knowledge. For example, changing passwords or changing email addresses.
+When you find something like this, usually, the next option is to make a request using **XHR** to `force` users to take sensitive actions without their knowledge. For example, changing passwords or changing email addresses.
 
 And when will do that, requests are sent as follows:
 
@@ -41,7 +41,7 @@ Cookie: JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csrf-token=3005c34f
 {"email":"pwn@1337.com"}
 ```
 
-Seen in the request header there is a `csrf` token that aims to prevent **CSRF** attacks. So the exploitation process becomes more difficult because there is a **CSRF** header that changes every time a request is made.
+In the request header, there is a `csrf` token aiming to prevent **CSRF** attacks. So the exploitation process becomes more difficult because there is a **CSRF** header that changes every time a request is made.
 
 When viewed closely, the request header and cookie have `csrf-tokens` with the same value. So I tried to change the two values into another value, but still the same.
 
@@ -86,7 +86,7 @@ When trying to make a request, the response is as follows:
 
 ![CSRF Detected](/assets/5d02f144bca472117661e342a29bf504-2.png)
 
-Why does the `Possible CSRF attack detected` message appear ?
+Why does the `Possible CSRF attack detected` message appear?
 
 When rechecking is done, the request turns out to be like this:
 
@@ -110,12 +110,12 @@ Cookie: csrf-token=asu; JSESSIONID=_zo6sV5qYkxhYwSCULJ4KRzOqP3G_-xVma2rKVPo; csr
 ```
 
 
-There appear 2 cookies named `csrf-token`, this seems to be the cause of the error earlier.
+There appear two cookies named `csrf-token`. This seems to be the cause of the error earlier.
 
 
-Since we don’t do anything to the cookies, all we can use here is `csrf-token` in the request header. But of course we must get a valid value.
+Since we don't do anything to the cookies, all we can use here is `csrf-token` in the request header. But of course, we must get a valid value.
 
-This website is built using AngularJS, there is no `csrf-token` value stored in the HTML code, and the value of the `cookie` changes with every request.
+This website is built using AngularJS, and there is no `csrf-token` value stored in the HTML code and the value of the `cookie` changes with every request.
 
 Wait, `always changing every request?` This means that there are times when the server sends a new `cookie` to the browser. So I tried to find out when that moment happened.
 
@@ -183,7 +183,7 @@ And the **CSRF Token** was successfully obtained!
 ![CSRF Token](/assets/5d02f144bca472117661e342a29bf504-3.png)
 
 
-Finally, just combine it with the request to change the email earlier.
+Finally, combine it with the request to change the email earlier.
 
 ```javascript
 var xhr = new XMLHttpRequest();
@@ -213,7 +213,7 @@ And the email address was successfully changed.
 
 #### Conclusion
 
-- When finding a Stored XSS but cannot get a cookie, don’t report it immediately because it is likely that the severity will decrease.
+- When finding a Stored XSS but cannot get a cookie, don't report it immediately because it is likely that the severity will decrease.
 - Try to do chaining with other bugs, CSRF for example to perform sensitive actions
 - When finding CSRF Protection, try to delete it or change its value to null, sometimes something magical can work.
 - Look for other endpoints that can be used to obtain a valid CSRF Token.
