@@ -13,13 +13,13 @@ AntiHack.me is a Singaporean Bug Bounty Platform site. After seeing this platfor
 
 #### VULNERABILITY I (Local File Disclosure)
 
-When accessing the https://www.antihack.me/blog page, the website will display Popup Modal which contains an invitation to subscribe to AntiHack Magazine, which is an E-Zine made by them. The process is by entering some information in the field provided, then pressing the Submit button. After the Submit button is pressed, the user will be directed to the link to download the E-Zine. Following is the form of the link:
+When accessing the https://www.antihack.me/blog page, the website will display Popup Modal, which contains an invitation to subscribe to AntiHack Magazine, which is an E-Zine made by them. The process is by entering some information in the field provided, then pressing the Submit button. After the Submit button is pressed, the user will be directed to the link to download the E-Zine. Following is the form of the link:
 
 ```
 https://www.antihack.me/filedownload.php?file=AntiHACKJan19Issue.pdf
 ```
 
-From this structure, it can be seen that the file `filedownload.php` may have a Local File Disclosure vulnerability, where by using this file, we can download sensitive files that are on the server. I tried using curl like this:
+From this structure, it can be seen that the file `filedownload.php` may have a Local File Disclosure vulnerability, whereby using this file, we can download sensitive files that are on the server. I tried using curl like this:
 
 ```
 [root@noobe.io ~]# curl https://www.antihack.me/filedownload.php?file=../../../../etc/passwd
@@ -33,7 +33,7 @@ games:x:5:60:games:/usr/games:/usr/sbin/nologin
 man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
 ```
 
-It can be seen that the file `filedownload.php` really has a vulnerability so we can download files on the server. Because the AntiHack.me website uses Laravel, then I try to get the config file, which is in the `.env` file.
+It can be seen that the file `filedownload.php` really has a vulnerability so we can download files on the server. Because of the AntiHack.me website uses Laravel, and then I try to get the config file, which is in the `.env` file.
 
 ```
 [root@noobe.io ~]# curl https://www.antihack.me/filedownload.php?file=../../../../var/www/html/.env
@@ -52,14 +52,14 @@ MAIL_USERNAME=admin@antihack.me
 MAIL_PASSWORD=[ redacted ]
 ```
 
-From this information, I obtain sensitive information such as user and database passwords. There is even an SMTP user and password used. I tried logging in using the SMTP user and password obtained and it's worked XD.
+From this information, I obtain sensitive information such as user and database passwords. There is even an SMTP user and password used. I tried logging in using the SMTP user and password obtained, and it's worked XD.
 
 ![AntiHack.Me Zoho Account](/assets/c943919f00e9a4a7cd67a30b257c3ea1-1.png)
 
 
 #### VULNERABILITY II (IDOR Delete Any File on AntiHack.me Server)
 
-As on other Bug Bounty websites, there is a feature for reporting vulnerability found. There is also an attach file feature to add image or video files to complete the report that we send. After finishing uploading the file on the report form, an X button appears which serves to delete the file that was just uploaded, of course the function is to delete the file if we incorrectly upload the report file.
+As on other Bug Bounty websites, there is a feature for reporting vulnerability found. There is also an attached file feature to add images or video files to complete the report that we send. After finishing uploading the file on the report form, an X button appears, which serves to delete the file that was just uploaded. Of course, the function is to delete the file if we incorrectly upload the report file.
 
 ![AntiHack.Me Delete File Button](/assets/c943919f00e9a4a7cd67a30b257c3ea1-2.png)
 
@@ -82,15 +82,15 @@ Connection: close
 file=35C2XxQY_400x400.png
 ```
 
-Unfortunately there is no validation of any files that may be deleted. By manipulating the values of the `file` parameters we can delete any files contained on the AntiHack.me server.
+Unfortunately, there is no validation of any files that may be deleted. By manipulating the values of the `file` parameters, we can delete any files contained on the AntiHack.me server.
 
 For more details, please see the following GIF:
 
 ![AntiHack.Me Delete File GIF](/assets/c943919f00e9a4a7cd67a30b257c3ea1-3.gif)
 
-In my trial I tried to delete files with several different extensions, but I did not try to delete files outside the website folder because I was worried that they might interfere and even damage the website.
+In my trial, I tried to delete files with several different extensions, but I did not try to delete files outside the website folder because I was worried that they might interfere and even damage the website.
 
-Those are some of the vulnerabilities that were found on the Anti Hack.me website. Currently all of these vulnerabilities have been fixed by AntiHack.me.
+Those are some of the vulnerabilities that were found on the Anti Hack.me website. Currently, all of these vulnerabilities have been fixed by AntiHack.me.
 
 #### Timeline
 
