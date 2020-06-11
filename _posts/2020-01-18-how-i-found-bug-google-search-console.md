@@ -1,7 +1,7 @@
 ---
 layout: post
 title: How I accidentally found Bug in Google Search Console
-excerpt: "In this simple writeup, I would like to tell how I found an Access Control bug in the Google Search Console application, where I can get information related to the domain that I added to the application even though the domain was not successfully verified by me."
+excerpt: "In this simple write-up, I would like to tell how I found an Access Control bug in the Google Search Console application, where I can get information related to the domain that I added to the application even though I did not successfully verify the domain."
 tags: [bug hunting, hacking, google, broken access control]
 categories: [bug hunting]
 comments: true
@@ -12,16 +12,16 @@ image:
 
 بسم الله الرحمن الرحيم
 
-In this simple writeup, I would like to tell how I found an Access Control bug in the `Google Search Console` application, where I can get information related to the domain that I added to the application even though the domain was not successfully verified by me.
+In this simple write-up, I would like to tell how I found an Access Control bug in the `Google Search Console` application, where I can get information related to the domain that I added to the application, even though it was not successfully verified by me.
 
 It started when I wanted to add my website to Google Search Console. I found a form to enter a domain name to add to the application. So I try to add `google.com` as my domain.
 
 ![Add Domain](/assets/40b89ba586da5e300fe220d4af958c52-1.png)
 
 
-After submiting the domain name, then a popup box appears to continue the domain verification process. There are several ways to verify the domain, such uploading an HTML file, and adding a meta tag to the website header.
+After submitting the domain name, then a popup box appears to continue the domain verification process. There are several ways to verify the domain, such as uploading an HTML file and adding a meta tag to the website header.
 
-In this process, I tried a several techniques to bypass the process, such as `Tampering the Request`, `Polluting the Parameter`, and `Manipulate Responses`, but everything is fail.
+In this process, I tried several techniques to bypass the process, such as `Tampering the Request,` `Polluting the Parameter,` and `Manipulate Responses,` but everything is failing.
 
 
 ![Domain Verification](/assets/40b89ba586da5e300fe220d4af958c52-2.png)
@@ -35,9 +35,9 @@ A few days later, I got an unusual email in my inbox. The email informs me about
 ![Domain Update Notification](/assets/40b89ba586da5e300fe220d4af958c52-3.png)
 
 
-Of course this is a bug, because at first I was unable to verify the `google.com` domain. It seems that the system cannot validate whether my account has successfully verified the domain or not, so when there is an update on that domain, the information will be sent to my email.
+Of course, this is a bug because I was unable to verify the `google.com` domain. It seems that the system cannot validate whether my account has successfully verified the domain or not, so when there is an update on that domain, the information will be sent to my email.
 
-So I reported the bug through Google VRP, and a few days later I got `Nice Catch!`.
+So I reported the bug through Google VRP, and a few days later, I got `Nice Catch!`.
 
 ![Nice Catch!](/assets/40b89ba586da5e300fe220d4af958c52-4.png)
 
