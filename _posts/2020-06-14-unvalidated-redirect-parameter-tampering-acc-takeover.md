@@ -99,7 +99,7 @@ Attack Flow:
 
 Attacker will receive a request on his server with user's token on it.
 
-<img width="800px" alt="Attacker's Side" src="/assets/f3abb86bd34cf4d52698f14c0da1dc60.png">
+<img width="800px" alt="Attacker's Side" src="/assets/f3abb86bd34cf4d52698f14c0da1dc60.jpg">
 
 I report this issue through Bugcrowd.
 
