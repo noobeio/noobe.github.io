@@ -97,11 +97,9 @@ Attack Flow:
 
 <img width="800px" alt="Attack Flow" src="/assets/ba62970936fbee1b8f84b6fd8dc9fb24.png">
 
-![Attack Flow](/assets/ba62970936fbee1b8f84b6fd8dc9fb24.png){:height="700px" width="400px"}
-
 Attacker will receive a request on his server with user's token on it.
 
-![Attacker's Side](/assets/f3abb86bd34cf4d52698f14c0da1dc60.jpg)
+<img width="800px" alt="Attacker's Side" src="/assets/f3abb86bd34cf4d52698f14c0da1dc60.png">
 
 I report this issue through Bugcrowd.
 
